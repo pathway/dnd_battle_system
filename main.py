@@ -8,7 +8,9 @@ from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from random import randint
 
-#!/usr/bin/python
+
+# Fire animation from https://gist.github.com/msimpson/1096950
+
 import curses, random
 
 def show_fire():
@@ -191,25 +193,20 @@ def do_attack_step(attacker,defender):
 def fancy_gameloop(fighters,delay=0):
   # keep looping forever
   while True:
+    for defenders,attackers in [ (fighters[0], fighters[1]), (fighters[0], fighters[1]) ]:
+      for attacker in attackers:
+        defender = random.choice(defenders)
+        died = do_attack_step(attacker, defender)
+        time.sleep(delay)
+        #if died: return attacker
+    # #
 
-    attacker = fighters[0]
-    defender = fighters[1]
-
-    died = do_attack_step(attacker, defender)
-    time.sleep(delay)
-    if died: return attacker
-
-    attacker = fighters[1]
-    defender = fighters[0]
-
-    died = do_attack_step(attacker, defender)
-    time.sleep(delay)
-    if died: return attacker
 
 
 # ------
 
-show_fire()
+if 0:
+  show_fire()
 
 
 def list_players():
@@ -229,18 +226,17 @@ def multi_battle(rounds=1,delay=0):
 
   intro2()
 
-
-      #time.sleep(1)
-  fighters = ['gunter', 'grizzly']
+  #time.sleep(1)
+  fighters = [ ['gunter',], ['grizzly',] ]
 
   score={
-    fighters[0]:0,
-    fighters[1]:0
+    0:0,
+    1:0
     }
 
   for i in range(0,rounds):
     reset_chars()
-    random.shuffle( fighters )
+    #random.shuffle( fighters )
     print(fighters)
     winner = fancy_gameloop( fighters, delay )
     #winner = simple_gameloop()
@@ -273,7 +269,7 @@ menu = ConsoleMenu("DnD Battle v0.01", "Copyleft 2020 (c) Roberts Creek Code Clu
 
 # A FunctionItem runs a Python function when selected
 item_battle = FunctionItem("Single Battle", single_battle, [])
-item_battle_m = FunctionItem("Multi Battle", multi_battle, [50])
+item_battle_m = FunctionItem("Multi Battle", multi_battle, [2])
 item_list = FunctionItem("List", list_players, [])
 item_show_fire = FunctionItem("Fire", show_fire, [])
 # A CommandItem runs a console command
